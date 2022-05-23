@@ -1,26 +1,39 @@
 /*eslint-disable*/
+import { useState, useEffect } from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
-
-let YellowBtn = styled.button`
-  background: ${props => props.bg};
-  color: ${props => (props.bg == 'blue' ? 'white' : 'black')};
-  padding: 10px;
-`;
 
 function Detail(props) {
   let { id } = useParams();
   let 찾은상품 = props.shoes.find(function (x) {
-    console.log(x);
     return x.id == id;
   });
+  let [count, setCount] = useState(0);
+  let [alert, setAlert] = useState(true);
+
+  useEffect(() => {
+    const a = setTimeout(() => {
+      setAlert(false);
+    }, 2000);
+    return clearTimeout(a);
+  }, []);
 
   return (
     <Container>
-      <YellowBtn bg="blue">sadasd</YellowBtn>
+      {alert == true ? <div className="alert alert-warning">2초이내 구매시 할인 </div> : null}
+      {count}
+      <Button
+        onClick={() => {
+          setCount(count + 1);
+        }}
+      >
+        버튼
+      </Button>
       <Col>
-        <img src={'https://codingapple1.github.io/shop/shoes' + (Number(id) + 1) + '.jpg'} width="100%" />
+        <img
+          src={'https://codingapple1.github.io/shop/shoes' + (Number(id) + 1) + '.jpg'}
+          width="100%"
+        />
       </Col>
       <Col>
         <h4 className="pt-5">{찾은상품.title}</h4>
