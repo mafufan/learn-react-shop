@@ -19,29 +19,25 @@ function App() {
             <Nav.Link
               onClick={() => {
                 navigate('/');
-              }}
-            >
+              }}>
               Home
             </Nav.Link>
             <Nav.Link
               onClick={() => {
                 navigate('/detail');
-              }}
-            >
+              }}>
               상세페이지
             </Nav.Link>
             <Nav.Link
               onClick={() => {
                 navigate('/cart');
-              }}
-            >
+              }}>
               Cart
             </Nav.Link>
             <Nav.Link
               onClick={() => {
                 navigate('/about');
-              }}
-            >
+              }}>
               About
             </Nav.Link>
           </Nav>
@@ -57,7 +53,7 @@ function App() {
               <Container>
                 <Row>
                   {shoes.map(function (a, i) {
-                    return <Card a={a} shoes={shoes[i]} i={i + 1} />;
+                    return <Card key={i} shoes={shoes[i]} i={i + 1} />;
                   })}
                 </Row>
               </Container>
@@ -65,10 +61,15 @@ function App() {
             </>
           }
         />
-        <Route path="/detail" element={<Detail />} />
+        <Route path="/detail/:id" element={<Detail shoes={shoes} />} />
+
         <Route path="/about" element={<About />}>
-          <Route path="member" element={<div>멤버들</div>} />
-          <Route path="location" element={<div>회사위치</div>} />
+          <Route path="member" element={<div>멤버임</div>} />
+          <Route path="location" element={<div>위치정보임</div>} />
+        </Route>
+        <Route path="/event" element={<EventPage />}>
+          <Route path="one" element={<p>첫 주문시 양배추즙 서비스</p>} />
+          <Route path="two" element={<p>생일기념 쿠폰받기</p>} />
         </Route>
 
         <Route path="*" element={<div>없는 페이지요</div>} />
@@ -76,20 +77,29 @@ function App() {
     </div>
   );
 }
-function About() {
+
+function EventPage() {
   return (
     <>
-      <h4>회사정보임</h4>
+      <h4>오늘의 이벤트</h4>
       <Outlet></Outlet>
     </>
+  );
+}
+
+function About() {
+  return (
+    <div>
+      <h4>회사정보임</h4>
+      <Outlet></Outlet>
+    </div>
   );
 }
 
 function Card(props) {
   return (
     <>
-      <Col key={props.a}>
-        {console.log(props.a)}
+      <Col>
         <img src={'https://codingapple1.github.io/shop/shoes' + props.i + '.jpg'} width="80%" />
         <h4>{props.shoes.title}</h4>
         <p>{props.shoes.price}</p>
