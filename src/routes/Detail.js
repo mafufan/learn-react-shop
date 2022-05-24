@@ -15,13 +15,28 @@ function Detail(props) {
     const a = setTimeout(() => {
       setAlert(false);
     }, 2000);
-    return clearTimeout(a);
+    return () => {
+      clearTimeout(a);
+    };
   }, []);
+
+  let [num, setNum] = useState('');
+  useEffect(() => {
+    if (isNaN(num) == true) {
+      alert('그러지마세요');
+    }
+  }, [num]);
 
   return (
     <Container>
       {alert == true ? <div className="alert alert-warning">2초이내 구매시 할인 </div> : null}
       {count}
+      <input
+        onChange={(e) => {
+          setNum(e.target.value);
+        }}
+        placeholder="입력하세요."
+      ></input>
       <Button
         onClick={() => {
           setCount(count + 1);

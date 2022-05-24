@@ -1,14 +1,16 @@
 /*eslint-disable*/
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Navbar, Container, Nav, Row, Col } from 'react-bootstrap';
 import './App.css';
 import data from './data.js';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
 import Detail from './routes/Detail.js';
+import axios from 'axios';
 
 function App() {
-  let [shoes] = useState(data);
+  let [shoes, setShoes] = useState(data);
   let navigate = useNavigate();
+  let [btn, setBtn] = useState(0);
 
   return (
     <div className="App">
@@ -19,25 +21,29 @@ function App() {
             <Nav.Link
               onClick={() => {
                 navigate('/');
-              }}>
+              }}
+            >
               Home
             </Nav.Link>
             <Nav.Link
               onClick={() => {
                 navigate('/detail');
-              }}>
+              }}
+            >
               상세페이지
             </Nav.Link>
             <Nav.Link
               onClick={() => {
                 navigate('/cart');
-              }}>
+              }}
+            >
               Cart
             </Nav.Link>
             <Nav.Link
               onClick={() => {
                 navigate('/about');
-              }}>
+              }}
+            >
               About
             </Nav.Link>
           </Nav>
@@ -57,7 +63,26 @@ function App() {
                   })}
                 </Row>
               </Container>
-              <Button variant="primary">Primary</Button>
+              <Button
+                onClick={() => {
+                  btn < 3 ? setBtn(btn + 1) : <h4>더 이상 출력할 데이터가 없습니다.</h4>;
+                  console.log({ btn });
+                  axios
+                    .get(`https://codingapple1.github.io/shop/data${btn + 1}.json`)
+                    .then((결과) => {
+                      console.log(결과.data);
+                      let copy = [...shoes, ...결과.data];
+                      setShoes(copy);
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      // 로딩중 숨기기~
+                    });
+                }}
+                variant="primary"
+              >
+                더보기
+              </Button>
             </>
           }
         />
