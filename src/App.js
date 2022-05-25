@@ -11,6 +11,17 @@ function App() {
   let [shoes, setShoes] = useState(data);
   let navigate = useNavigate();
   let [btn, setBtn] = useState(0);
+  let [alert, setAlert] = useState(false);
+  let [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const alert = setTimeout(() => {
+      setAlert(false);
+    }, 2000);
+    return () => {
+      clearTimeout(alert);
+    };
+  }, [alert]);
 
   return (
     <div className="App">
@@ -61,23 +72,31 @@ function App() {
                   {shoes.map(function (a, i) {
                     return <Card key={i} shoes={shoes[i]} i={i + 1} />;
                   })}
+                  {loading == true ? <Loading /> : null}
                 </Row>
               </Container>
+              {alert == true ? <Alert></Alert> : null}
               <Button
                 onClick={() => {
-                  btn < 3 ? setBtn(btn + 1) : <h4>더 이상 출력할 데이터가 없습니다.</h4>;
+                  btn < 3 ? setBtn(btn + 1) : setAlert(true);
                   console.log({ btn });
-                  axios
-                    .get(`https://codingapple1.github.io/shop/data${btn + 1}.json`)
-                    .then((결과) => {
-                      console.log(결과.data);
-                      let copy = [...shoes, ...결과.data];
-                      setShoes(copy);
-                    })
-                    .catch((err) => {
-                      console.log(err);
-                      // 로딩중 숨기기~
-                    });
+                  setLoading(true);
+                  const req = setTimeout(() => {
+                    axios
+                      .get(`https://codingapple1.github.io/shop/data${btn + 1}.json`)
+                      .then((결과) => {
+                        console.log(결과.data);
+                        let copy = [...shoes, ...결과.data];
+                        setShoes(copy);
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      })
+                      .finally(() => {
+                        setLoading(false);
+                        clearTimeout(req);
+                      });
+                  }, 1500);
                 }}
                 variant="primary"
               >
@@ -100,6 +119,22 @@ function App() {
         <Route path="*" element={<div>없는 페이지요</div>} />
       </Routes>
     </div>
+  );
+}
+
+function Loading() {
+  return (
+    <>
+      <div className="alert alert-warning">로딩 중 입니다.</div>
+    </>
+  );
+}
+
+function Alert() {
+  return (
+    <>
+      <div className="alert alert-warning">더이상 표시할 데이터가 없습니다. </div>
+    </>
   );
 }
 
