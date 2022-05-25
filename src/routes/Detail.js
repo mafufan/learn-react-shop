@@ -1,6 +1,6 @@
 /*eslint-disable*/
 import { useState, useEffect } from 'react';
-import { Button, Container, Row, Col } from 'react-bootstrap';
+import { Button, Container, Row, Col, Nav } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 
 function Detail(props) {
@@ -10,6 +10,7 @@ function Detail(props) {
   });
   let [count, setCount] = useState(0);
   let [alert, setAlert] = useState(true);
+  let [탭, 탭변경] = useState(0);
 
   useEffect(() => {
     const a = setTimeout(() => {
@@ -56,8 +57,45 @@ function Detail(props) {
         <p>{찾은상품.price}원</p>
         <Button variant="danger">주문하기</Button>
       </Col>
+      <Nav variant="tabs" defaultActiveKey="link0">
+        <Nav.Item>
+          <Nav.Link
+            onClick={() => {
+              탭변경(0);
+            }}
+            eventKey="link0"
+          >
+            버튼0
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link
+            onClick={() => {
+              탭변경(1);
+            }}
+            eventKey="link1"
+          >
+            버튼1
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link
+            onClick={() => {
+              탭변경(2);
+            }}
+            eventKey="link2"
+          >
+            버튼2
+          </Nav.Link>
+        </Nav.Item>
+      </Nav>
+      <TabContent 탭={탭} />
     </Container>
   );
+}
+
+function TabContent({ 탭 }) {
+  return [<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][탭];
 }
 
 export default Detail;
