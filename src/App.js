@@ -23,6 +23,24 @@ function App() {
     };
   }, [alert]);
 
+  useEffect(() => {
+    const req = setTimeout(() => {
+      axios
+        .get(`https://codingapple1.github.io/shop/data${btn}.json`)
+        .then((결과) => {
+          console.log(결과.data);
+          let copy = [...shoes, ...결과.data];
+          setShoes(copy);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setLoading(false);
+          clearTimeout(req);
+        });
+    }, 1500);
+  }, [btn]);
   return (
     <div className="App">
       <Navbar variant="dark" className="Navbar">
@@ -57,6 +75,13 @@ function App() {
             >
               About
             </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                navigate('/event');
+              }}
+            >
+              Event
+            </Nav.Link>
           </Nav>
         </Container>
       </Navbar>
@@ -70,7 +95,7 @@ function App() {
               <Container>
                 <Row>
                   {shoes.map(function (a, i) {
-                    return <Card key={i} shoes={shoes[i]} i={i + 1} />;
+                    return <Card key={i} navigate={navigate} shoes={shoes[i]} i={i + 1} />;
                   })}
                   {loading == true ? <Loading /> : null}
                 </Row>
@@ -81,22 +106,6 @@ function App() {
                   btn < 3 ? setBtn(btn + 1) : setAlert(true);
                   console.log({ btn });
                   setLoading(true);
-                  const req = setTimeout(() => {
-                    axios
-                      .get(`https://codingapple1.github.io/shop/data${btn + 1}.json`)
-                      .then((결과) => {
-                        console.log(결과.data);
-                        let copy = [...shoes, ...결과.data];
-                        setShoes(copy);
-                      })
-                      .catch((err) => {
-                        console.log(err);
-                      })
-                      .finally(() => {
-                        setLoading(false);
-                        clearTimeout(req);
-                      });
-                  }, 1500);
                 }}
                 variant="primary"
               >
@@ -111,7 +120,7 @@ function App() {
           <Route path="member" element={<div>멤버임</div>} />
           <Route path="location" element={<div>위치정보임</div>} />
         </Route>
-        <Route path="/event" element={<EventPage />}>
+        <Route path="/event" element={<EventPage navigate={navigate} />}>
           <Route path="one" element={<p>첫 주문시 양배추즙 서비스</p>} />
           <Route path="two" element={<p>생일기념 쿠폰받기</p>} />
         </Route>
@@ -138,10 +147,25 @@ function Alert() {
   );
 }
 
-function EventPage() {
+function EventPage(props) {
   return (
     <>
       <h4>오늘의 이벤트</h4>
+      <Button
+        onClick={() => {
+          props.navigate('/event/one');
+        }}
+        style={{ marginRight: '20px' }}
+      >
+        이벤트 1
+      </Button>
+      <Button
+        onClick={() => {
+          props.navigate('/event/two');
+        }}
+      >
+        이벤트 2
+      </Button>
       <Outlet></Outlet>
     </>
   );
@@ -160,7 +184,13 @@ function Card(props) {
   return (
     <>
       <Col>
-        <img src={'https://codingapple1.github.io/shop/shoes' + props.i + '.jpg'} width="80%" />
+        <img
+          onClick={() => {
+            props.navigate(`/detail/${props.i - 1}`);
+          }}
+          src={'https://codingapple1.github.io/shop/shoes' + props.i + '.jpg'}
+          width="80%"
+        />
         <h4>{props.shoes.title}</h4>
         <p>{props.shoes.price}</p>
       </Col>
