@@ -1,6 +1,6 @@
 /*eslint-disable*/
 import { useState, useEffect } from 'react';
-import { Button, Container, Row, Col, Nav } from 'react-bootstrap';
+import { Button, Container, Row, Col, Nav, Alert } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 
 function Detail(props) {
@@ -10,6 +10,7 @@ function Detail(props) {
   });
   let [count, setCount] = useState(0);
   let [alert, setAlert] = useState(true);
+  let [alert2, setAlert2] = useState(false);
   let [탭, 탭변경] = useState(0);
 
   useEffect(() => {
@@ -24,13 +25,16 @@ function Detail(props) {
   let [num, setNum] = useState('');
   useEffect(() => {
     if (isNaN(num) == true) {
-      alert('그러지마세요');
+      setAlert2(true);
+    } else {
+      setAlert2(false);
     }
   }, [num]);
 
   return (
     <Container>
-      {alert == true ? <div className="alert alert-warning">2초이내 구매시 할인 </div> : null}
+      {alert2 === true ? <Alert>숫자만 입력하세요</Alert> : null}
+      {alert === true ? <div className="alert alert-warning">2초이내 구매시 할인 </div> : null}
       {count}
       <input
         onChange={(e) => {
